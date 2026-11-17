@@ -1,0 +1,60 @@
+"use client";
+
+import Link from "next/link";
+import NotFoundTracker from "@/components/NotFoundTracker";
+import dynamic from "next/dynamic";
+
+// Client-only so the heavy canvas/motion code and site chrome stay out of every edge function bundle
+// (Cloudflare Pages Functions 25 MiB limit). The root not-found is bundled into all routes.
+const ThermodynamicGrid = dynamic(() => import("@/components/ui/interactive-thermodynamic-grid"), { ssr: false });
+const TubesBackground = dynamic(() => import("@/components/ui/neon-flow"), { ssr: false });
+const Header = dynamic(() => import("@/components/Navbar"), { ssr: false });
+const Footer = dynamic(() => import("@/components/footer"), { ssr: false });
+
+export default function NotFound() {
+  return (
+    <>
+    <Header />
+    <section
+      className="relative isolate flex min-h-screen items-center justify-center overflow-hidden bg-[#050505] px-6 py-20 text-zinc-100"
+      aria-labelledby="not-found-title"
+      aria-describedby="not-found-copy"
+    >
+      <NotFoundTracker />
+      <TubesBackground
+        className="absolute inset-0 min-h-screen opacity-40"
+        enableClickInteraction={false}
+      />
+      <ThermodynamicGrid
+        resolution={10}
+        className="opacity-50"
+        coolingFactor={0.975}
+      />
+      <div className="absolute inset-0 pointer-events-none bg-gradient-to-b from-black/40 via-black/60 to-black/85" />
+
+      <div className="relative z-10 pointer-events-none mx-auto max-w-2xl text-center">
+        <h1
+          id="not-found-title"
+          className="mt-5 text-[16rem] font-mono font-bold leading-tight text-neutral-100 "
+        >
+          404
+        </h1>
+        <p
+          id="not-found-copy"
+          className="mt-4 text-base leading-relaxed text-zinc-300 sm:text-lg"
+        >
+          The page you were trying to reach does not exist, may have moved, or
+          the URL might be incorrect.
+        </p>
+        <Link
+          href="/"
+          className="mt-8 inline-flex pointer-events-auto rounded-full border border-white/20 px-5 py-3 text-sm font-medium text-white transition-colors hover:bg-white/10 focus-visible:outline-none focus-visible:ring-2 focus-visible:ring-white focus-visible:ring-offset-2 focus-visible:ring-offset-black"
+        >
+          Return home
+        </Link>
+      </div>
+    </section>
+    <Footer />
+    </>
+  );
+}

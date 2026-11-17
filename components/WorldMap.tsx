@@ -1,0 +1,201 @@
+"use client";
+
+import { useRef } from "react";
+import { motion, useInView } from "framer-motion";
+
+// Projection constants for the pre-rendered /world-map.svg, generated once with
+// dotted-map ({ height: 100, grid: "diagonal" }) so the library and its country
+// GeoJSON are no longer shipped to the browser.
+const MAP_WIDTH = 210;
+const MAP_HEIGHT = 100;
+const X_MIN = -19926188.85199597;
+const Y_MAX = 11402272.159297233;
+const X_RANGE = 39852377.70399194;
+const Y_RANGE = 18960687.815379016;
+const Y_STEP = Math.sqrt(3) / 2;
+const EARTH_RADIUS = 6378137;
+
+// Web Mercator projection snapped to the diagonal dot grid (mirrors dotted-map's getPin).
+function projectPoint(lat: number, lng: number) {
+  const mercX = (EARTH_RADIUS * lng * Math.PI) / 180;
+  const mercY =
+    EARTH_RADIUS * Math.log(Math.tan(Math.PI / 4 + (lat * Math.PI) / 360));
+  let rawX = (MAP_WIDTH * (mercX - X_MIN)) / X_RANGE;
+  const rawY = (MAP_HEIGHT * (Y_MAX - mercY)) / Y_RANGE;
+  const row = Math.round(rawY / Y_STEP);
+  const shifted = row % 2 === 0;
+  if (shifted) rawX -= 0.5;
+  const x = Math.round(rawX) + (shifted ? 0.5 : 0);
+  return { x, y: row * Y_STEP };
+}
+
+interface MapProps {
+  dots?: Array<{
+    start: { lat: number; lng: number; label?: string };
+    end: { lat: number; lng: number; label?: string };
+  }>;
+  lineColor?: string;
+}
+
+export function WorldMap({ dots = [], lineColor = "#009ACA" }: MapProps) {
+  const containerRef = useRef<HTMLDivElement>(null);
+  const isInView = useInView(containerRef, { once: true });
+  const mapWidth = MAP_WIDTH;
+  const mapHeight = MAP_HEIGHT;
+
+  const createCurvedPath = (
+    start: { x: number; y: number },
+    end: { x: number; y: number }
+  ) => {
+    const midX = (start.x + end.x) / 2;
+    const midY = Math.min(start.y, end.y) - 50;
+    return `M ${start.x} ${start.y} Q ${midX} ${midY} ${end.x} ${end.y}`;
+  };
+
+  return (
+    <div
+      ref={containerRef}
+      className="w-full rounded-lg relative font-sans"
+      style={{ aspectRatio: `${mapWidth} / ${mapHeight}` }}
+    >
+      <img
+        src="/world-map.svg"
+        loading="lazy"
+        decoding="async"
+        className="h-full w-full object-contain pointer-events-none select-none"
+        alt="world map"
+        height={mapHeight}
+        width={mapWidth}
+        draggable={false}
+      />
+      <svg
+        viewBox={`0 0 ${mapWidth} ${mapHeight}`}
+        className="w-full h-full absolute inset-0 pointer-events-none select-none"
+      >
+        {dots.map((dot, i) => {
+          const startPoint = projectPoint(dot.start.lat, dot.start.lng);
+          const endPoint = projectPoint(dot.end.lat, dot.end.lng);
+          return (
+            <g key={`path-group-${i}`}>
+              <motion.path
+                d={createCurvedPath(startPoint, endPoint)}
+                fill="none"
+                stroke="url(#path-gradient)"
+                strokeWidth="0.5"
+                initial={{
+                  pathLength: 0,
+                }}
+                animate={
+                  isInView
+                    ? {
+                        pathLength: 1,
+                      }
+                    : {
+                        pathLength: 0,
+                      }
+                }
+                transition={{
+                  duration: isInView ? 1 : 0,
+                  delay: isInView ? 0.5 * i : 0,
+                  ease: "easeOut",
+                }}
+                key={`start-upper-${i}`}
+              ></motion.path>
+            </g>
+          );
+        })}
+
+        <defs>
+          <linearGradient id="path-gradient" x1="0%" y1="0%" x2="100%" y2="0%">
+            <stop offset="0%" stopColor="#009ACA" stopOpacity="0" />
+            <stop offset="10%" stopColor="#009ACA" stopOpacity="1" />
+            <stop offset="90%" stopColor="#00CACA" stopOpacity="1" />
+            <stop offset="100%" stopColor="#00CACA" stopOpacity="0" />
+          </linearGradient>
+        </defs>
+
+        {dots.map((dot, i) => {
+          const startPoint = projectPoint(dot.start.lat, dot.start.lng);
+          const endPoint = projectPoint(dot.end.lat, dot.end.lng);
+
+          return (
+            <g key={`points-group-${i}`}>
+              <g key={`start-${i}`}>
+                <circle
+                  cx={startPoint.x}
+                  cy={startPoint.y}
+                  r="0.5"
+                  fill={lineColor}
+                />
+                <circle
+                  cx={startPoint.x}
+                  cy={startPoint.y}
+                  r="0.5"
+                  fill={lineColor}
+                  opacity="0.4"
+                >
+                  {isInView && (
+                    <>
+                      <animate
+                        attributeName="r"
+                        from="0.5"
+                        to="4"
+                        dur="1.2s"
+                        begin="0s"
+                        repeatCount="indefinite"
+                      />
+                      <animate
+                        attributeName="opacity"
+                        from="0.4"
+                        to="0"
+                        dur="1.2s"
+                        begin="0s"
+                        repeatCount="indefinite"
+                      />
+                    </>
+                  )}
+                </circle>
+              </g>
+              <g key={`end-${i}`}>
+                <circle
+                  cx={endPoint.x}
+                  cy={endPoint.y}
+                  r="0.5"
+                  fill={lineColor}
+                />
+                <circle
+                  cx={endPoint.x}
+                  cy={endPoint.y}
+                  r="0.5"
+                  fill={lineColor}
+                  opacity="0.4"
+                >
+                  {isInView && (
+                    <>
+                      <animate
+                        attributeName="r"
+                        from="0.5"
+                        to="4"
+                        dur="1.2s"
+                        begin="0s"
+                        repeatCount="indefinite"
+                      />
+                      <animate
+                        attributeName="opacity"
+                        from="0.4"
+                        to="0"
+                        dur="1.2s"
+                        begin="0s"
+                        repeatCount="indefinite"
+                      />
+                    </>
+                  )}
+                </circle>
+              </g>
+            </g>
+          );
+        })}
+      </svg>
+    </div>
+  );
+}
