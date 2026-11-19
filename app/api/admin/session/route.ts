@@ -22,8 +22,13 @@ const baseHeaders = { "Cache-Control": "no-store", "X-Robots-Tag": "noindex" };
 function sameOrigin(req: NextRequest): boolean {
   const origin = req.headers.get("origin");
   if (!origin) return false;
+  const forwardedHost = req.headers
+    .get("x-forwarded-host")
+    ?.split(",")[0]
+    .trim();
+  const requestHost = forwardedHost || req.headers.get("host") || req.nextUrl.host;
   try {
-    return new URL(origin).host === req.nextUrl.host;
+    return new URL(origin).host === requestHost;
   } catch {
     return false;
   }
