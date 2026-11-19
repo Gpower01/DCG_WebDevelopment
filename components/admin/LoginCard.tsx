@@ -48,6 +48,8 @@ export default function LoginCard({ initialError }: { initialError?: string }) {
       setError(
         res.status === 403
           ? "This account is not authorised for the admin panel."
+          : res.status === 503
+            ? "Admin sign-in is temporarily unavailable. Check the deployment configuration."
           : res.status === 429
             ? "Too many attempts. Wait a few minutes and try again."
             : "Sign-in failed. Try again.",
