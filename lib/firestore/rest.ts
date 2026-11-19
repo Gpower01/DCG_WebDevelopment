@@ -83,6 +83,25 @@ function decodeDoc<T>(doc: FirestoreDoc): T & { id: string } {
 // ---- service-account access token (cached per isolate, per scope) ----
 const tokenCache = new Map<string, { token: string; exp: number }>();
 const DATASTORE_SCOPE = "https://www.googleapis.com/auth/datastore";
+const METADATA_TOKEN_URL =
+  "http://metadata.google.internal/computeMetadata/v1/instance/service-accounts/default/token";
+
+async function getMetadataAccessToken(): Promise<{ token: string; expiresIn: number }> {
+  const controller = new AbortController();
+  const timeout = setTimeout(() => controller.abort(), 1500);
+  try {
+    const res = await fetch(METADATA_TOKEN_URL, {
+      headers: { "Metadata-Flavor": "Google" },
+      signal: controller.signal,
+    });
+    if (!res.ok) throw new Error(`Metadata server token request failed (${res.status})`);
+    const json = (await res.json()) as { access_token?: string; expires_in?: number };
+    if (!json.access_token || !json.expires_in) throw new Error("Metadata server returned an invalid token");
+    return { token: json.access_token, expiresIn: json.expires_in };
+  } finally {
+    clearTimeout(timeout);
+  }
+}
 
 /** Mint (or reuse) an OAuth access token for the service account. Also used by the GA4 reader. */
 export async function getAccessToken(scope: string = DATASTORE_SCOPE): Promise<string> {
@@ -91,7 +110,11 @@ export async function getAccessToken(scope: string = DATASTORE_SCOPE): Promise<s
   if (cached && cached.exp - 60 > now) return cached.token;
 
   const raw = process.env.FIREBASE_SERVICE_ACCOUNT_JSON;
-  if (!raw) throw new Error("FIREBASE_SERVICE_ACCOUNT_JSON is not set");
+  if (!raw) {
+    const metadata = await getMetadataAccessToken();
+    tokenCache.set(scope, { token: metadata.token, exp: now + metadata.expiresIn });
+    return metadata.token;
+  }
   const sa = JSON.parse(raw) as { client_email: string; private_key: string };
 
   const key = await importPKCS8(sa.private_key, "RS256");

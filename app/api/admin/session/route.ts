@@ -8,6 +8,7 @@ import {
   SESSION_COOKIE,
   SESSION_TTL_SECONDS,
   verifyFirebaseIdToken,
+  type AdminRole,
 } from "@/lib/auth/session";
 import { hashIp } from "@/lib/ip-hash";
 import { rateLimit } from "@/lib/rate-limit";
@@ -58,7 +59,13 @@ export async function POST(req: NextRequest) {
     return Response.json({ error: "Access denied" }, { status: 403, headers: baseHeaders });
   }
 
-  const role = await resolveAdminRole(email).catch(() => null);
+  let role: AdminRole | null;
+  try {
+    role = await resolveAdminRole(email);
+  } catch (error) {
+    console.error("Admin authorization lookup failed", error);
+    return Response.json({ error: "Admin authorization unavailable" }, { status: 503, headers: baseHeaders });
+  }
   if (!role) {
     // A verified Google account that is not on the allowlist. Same response as a bad token so allowlisted
     // emails cannot be enumerated, but the owners are told after repeated attempts.

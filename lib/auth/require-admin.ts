@@ -10,14 +10,14 @@ import { readSessionToken, SESSION_COOKIE, type AdminRole, type AdminSession } f
  */
 export async function resolveAdminRole(email: string): Promise<AdminRole | null> {
   const normalized = email.toLowerCase();
-  const doc = await getDoc<{ role?: string }>(`admins/${encodeURIComponent(normalized)}`);
-  if (doc) return doc.role === "owner" ? "owner" : doc.role === "editor" ? "editor" : null;
-
   const bootstrap = (process.env.ADMIN_OWNER_EMAILS ?? "")
     .split(",")
     .map((e) => e.trim().toLowerCase())
     .filter(Boolean);
-  return bootstrap.includes(normalized) ? "owner" : null;
+  if (bootstrap.includes(normalized)) return "owner";
+
+  const doc = await getDoc<{ role?: string }>(`admins/${encodeURIComponent(normalized)}`);
+  return doc?.role === "owner" ? "owner" : doc?.role === "editor" ? "editor" : null;
 }
 
 /** Current admin or null. Re-checks the allowlist on every call so removals apply immediately. */

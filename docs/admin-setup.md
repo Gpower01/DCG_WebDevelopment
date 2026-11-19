@@ -74,7 +74,17 @@ rejected applications older than 12 months, and archives jobs past their closing
 - Google Analytics tab: enable the *Google Analytics Data API* and *Admin API* for the Cloud project, add the service
   account email as a **Viewer** on the GA4 property, then set `GA4_PROPERTY_ID` (the numeric property id).
 
-## 8. Deployment notes (Cloudflare Pages + next-on-pages)
+## 8. Firebase App Hosting
+
+When deploying with Firebase App Hosting, the server can use the App Hosting runtime service account instead of
+`FIREBASE_SERVICE_ACCOUNT_JSON`. Grant that service account the **Cloud Datastore User** role in IAM so it can read and
+write Firestore. Set `ADMIN_SESSION_SECRET` and, for first-login bootstrap access, `ADMIN_OWNER_EMAILS` as App Hosting
+runtime secrets/environment variables. Existing admins continue to be loaded from the `admins` collection.
+
+If `FIREBASE_SERVICE_ACCOUNT_JSON` is not set, the app requests an access token from the Google metadata server. This
+fallback is only available in Google-hosted runtimes; Cloudflare Pages still requires the service-account JSON secret.
+
+## 9. Deployment notes (Cloudflare Pages + next-on-pages)
 - Every dynamic route must declare `export const runtime = "edge"`; next-on-pages fails the build otherwise (this is what
   broke the first admin deploy: `/sitemap.xml` was missing it).
 - CVs are stored in Firestore (`applicationFiles`, up to 900 KB, PDF/DOCX validated by content). For larger files, move
