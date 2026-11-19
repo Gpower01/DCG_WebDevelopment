@@ -6,7 +6,11 @@
     "dev": "next dev",
     "build": "next build",
     "start": "next start",
-    "lint": "next lint"
+    "lint": "next lint",
+    "dev:vinext": "vite dev --port 3001",
+    "build:vinext": "vite build",
+    "start:vinext": "vite preview",
+    "deploy:vinext": "vinext-cloudflare deploy"
   },
   "dependencies": {
     "@emotion/is-prop-valid": "latest",
@@ -22,6 +26,7 @@
     "@react-three/drei": "^11.0.0-alpha.5",
     "@react-three/fiber": "^10.0.0-alpha.2",
     "@tabler/icons-react": "^3.36.0",
+    "@vinext/cloudflare": "^1.4.0",
     "aws4fetch": "^1.0.20",
     "class-variance-authority": "^0.7.1",
     "clsx": "^2.1.1",
@@ -33,6 +38,7 @@
     "next": "^16.4.3",
     "react": "^19",
     "react-dom": "^19",
+    "react-server-dom-webpack": "^19.3.1",
     "recharts": "^3.10.1",
     "rough-notation": "^0.5.1",
     "simplex-noise": "^4.0.3",
@@ -40,16 +46,23 @@
     "tailwindcss-animate": "^1.0.7",
     "three": "^0.183.1",
     "three-globe": "^2.45.0",
+    "vinext": "^1.4.6",
     "zod": "^3.24.1"
   },
   "devDependencies": {
+    "@cloudflare/vite-plugin": "2.0.0-rc.1",
     "@types/node": "^22",
     "@types/react": "^19",
     "@types/react-dom": "^19",
     "@types/three": "^0.181.0",
+    "@vitejs/plugin-react": "^6.3.0",
+    "@vitejs/plugin-rsc": "^0.5.39",
+    "cf": "1.0.0-rc.1",
     "postcss": "^8",
     "shadcn": "^4.0.7",
     "tailwindcss": "^3.4.17",
-    "typescript": "^5"
-  }
+    "typescript": "^5",
+    "vite": "8.3.0"
+  },
+  "type": "module"
 }
