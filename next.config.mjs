@@ -71,6 +71,7 @@ const nextConfig = {
     root: __dirname,
   },
   experimental: {
+    agentUpgrade: "security",
     optimizePackageImports: ["lucide-react", "@tabler/icons-react"],
   },
   images: {
