@@ -44,3 +44,6 @@ node_modules.bak.20260308T1836/
 .next-build/
 .wrangler/
 .dev.vars
+/dist/
+.vinext/
+.cloudflare/

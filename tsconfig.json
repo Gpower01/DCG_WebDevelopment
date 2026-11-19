@@ -25,9 +25,6 @@
     "paths": {
       "@/*": [
         "./*"
-      ],
-      "three/examples/jsm/*": [
-        "./node_modules/@types/three/examples/jsm/*"
       ]
     }
   },
