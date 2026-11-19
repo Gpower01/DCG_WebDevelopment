@@ -3,6 +3,7 @@ import Header from "@/components/Navbar";
 import Footer from "@/components/footer";
 import Analytics from "@/components/Analytics";
 import CookieBanner from "@/components/CookieBanner";
+import Annotate from "@/components/Annotate";
 import CollectPageview from "@/components/CollectPageview";
 import AnalyticsExtras from "@/components/AnalyticsExtras";
 import { getGoogleAnalyticsId } from "@/lib/analytics-config";
@@ -23,6 +24,7 @@ export default function SiteLayout({ children }: { children: ReactNode }) {
       </main>
       <Footer />
       <CookieBanner />
+      <Annotate />
     </>
   );
 }

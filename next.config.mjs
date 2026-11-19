@@ -9,6 +9,8 @@ const isDev = process.env.NODE_ENV !== "production";
 // The Vercel toolbar/comments widget loads from vercel.live; allow it on any Vercel build
 // (VERCEL is set automatically there) but not on other hosts such as Firebase.
 const isVercel = Boolean(process.env.VERCEL);
+// Test-site review overlay (components/Annotate.tsx) loads from jsDelivr; only allowed when enabled.
+const annotate = process.env.NEXT_PUBLIC_ENABLE_ANNOTATE === "true" ? " https://cdn.jsdelivr.net" : "";
 const vercelLive = isVercel ? " https://vercel.live" : "";
 const firebaseAuthDomain = "dataconsultinggroup.firebaseapp.com";
 
@@ -20,7 +22,7 @@ const firebaseAuthDomain = "dataconsultinggroup.firebaseapp.com";
 function buildCsp({ admin }) {
   const scripts = admin
     ? `'self' 'unsafe-inline'${isDev ? " 'unsafe-eval'" : ""} https://apis.google.com`
-    : `'self' 'unsafe-inline'${isDev ? " 'unsafe-eval'" : ""} https://www.googletagmanager.com https://static.cloudflareinsights.com https://challenges.cloudflare.com${vercelLive}`;
+    : `'self' 'unsafe-inline'${isDev ? " 'unsafe-eval'" : ""} https://www.googletagmanager.com https://static.cloudflareinsights.com https://challenges.cloudflare.com${annotate}${vercelLive}`;
   const connect = admin
     ? `'self' https://identitytoolkit.googleapis.com https://securetoken.googleapis.com https://www.googleapis.com https://${firebaseAuthDomain}`
     : `'self' https://*.google-analytics.com https://*.analytics.google.com https://www.googletagmanager.com https://cloudflareinsights.com https://challenges.cloudflare.com${isVercel ? " https://vercel.live wss://ws-us3.pusher.com" : ""}`;
