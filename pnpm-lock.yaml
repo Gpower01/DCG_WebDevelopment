@@ -46,7 +46,7 @@ importers:
         version: 10.0.0-canary.fd3335d(@types/react@19.3.0)(immer@11.2.9)(react-dom@19.3.1(react@19.3.1))(react@19.3.1)(three@0.183.2)
       '@reviewjs/annotate':
         specifier: github:LeventeBotos/annotate#feat/firebase-live-sync
-        version: https://codeload.github.com/LeventeBotos/annotate/tar.gz/ba12b3b109093af92d030325c9e5a91d82435529(firebase@13.2.0(@types/react@19.3.0)(next@16.4.6(@babel/core@7.29.7(supports-color@8.1.1))(@opentelemetry/api@1.9.1)(@types/node@22.20.5)(react-dom@19.3.1(react@19.3.1))(react@19.3.1))(react@19.3.1)(supports-color@8.1.1))
+        version: https://codeload.github.com/LeventeBotos/annotate/tar.gz/8ecbfae7c464465625c84bc57b069688fa919aea(firebase@13.2.0(@types/react@19.3.0)(next@16.4.6(@babel/core@7.29.7(supports-color@8.1.1))(@opentelemetry/api@1.9.1)(@types/node@22.20.5)(react-dom@19.3.1(react@19.3.1))(react@19.3.1))(react@19.3.1)(supports-color@8.1.1))
       '@tabler/icons-react':
         specifier: ^3.36.0
         version: 3.50.0(react@19.3.1)
@@ -1834,8 +1834,8 @@ packages:
     resolution: {integrity: sha512-yi6R0HyHtsoWTRA06Col4WoDs7SvlXU3DLMNP2bdAgs7HK18dTEVl1weXgxRzi8gwLteGUbIg29zulxIB3GSdg==}
     engines: {node: '>= 10'}
 
-  '@reviewjs/annotate@https://codeload.github.com/LeventeBotos/annotate/tar.gz/ba12b3b109093af92d030325c9e5a91d82435529':
-    resolution: {gitHosted: true, integrity: sha512-S2mtEOi3HPsnXVNAbmqLig1m4AEd9HGATfCW1Sm3P+FA0bODIm8TrG6yzTH2WGSr5RCM+BRCYaL09Gs0ndjeXg==, tarball: https://codeload.github.com/LeventeBotos/annotate/tar.gz/ba12b3b109093af92d030325c9e5a91d82435529}
+  '@reviewjs/annotate@https://codeload.github.com/LeventeBotos/annotate/tar.gz/8ecbfae7c464465625c84bc57b069688fa919aea':
+    resolution: {gitHosted: true, integrity: sha512-BtMb9LaSe95ivx0VZ6wlwruywMa1V1ys+mUQP4uAYxRvSKuPeqmmh4xe7KKvT1YDaAUpcL/kdvFAoJU0Aj1N7Q==, tarball: https://codeload.github.com/LeventeBotos/annotate/tar.gz/8ecbfae7c464465625c84bc57b069688fa919aea}
     version: 1.6.0
     peerDependencies:
       firebase: '>=12.0.0'
@@ -5961,7 +5961,7 @@ snapshots:
 
   '@resvg/resvg-wasm@2.4.1': {}
 
-  '@reviewjs/annotate@https://codeload.github.com/LeventeBotos/annotate/tar.gz/ba12b3b109093af92d030325c9e5a91d82435529(firebase@13.2.0(@types/react@19.3.0)(next@16.4.6(@babel/core@7.29.7(supports-color@8.1.1))(@opentelemetry/api@1.9.1)(@types/node@22.20.5)(react-dom@19.3.1(react@19.3.1))(react@19.3.1))(react@19.3.1)(supports-color@8.1.1))':
+  '@reviewjs/annotate@https://codeload.github.com/LeventeBotos/annotate/tar.gz/8ecbfae7c464465625c84bc57b069688fa919aea(firebase@13.2.0(@types/react@19.3.0)(next@16.4.6(@babel/core@7.29.7(supports-color@8.1.1))(@opentelemetry/api@1.9.1)(@types/node@22.20.5)(react-dom@19.3.1(react@19.3.1))(react@19.3.1))(react@19.3.1)(supports-color@8.1.1))':
     optionalDependencies:
       firebase: 13.2.0(@types/react@19.3.0)(next@16.4.6(@babel/core@7.29.7(supports-color@8.1.1))(@opentelemetry/api@1.9.1)(@types/node@22.20.5)(react-dom@19.3.1(react@19.3.1))(react@19.3.1))(react@19.3.1)(supports-color@8.1.1)
 
